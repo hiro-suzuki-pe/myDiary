@@ -4,6 +4,23 @@ import datetime as da
 import calendar as ca
 from tkinter import messagebox
 import csv
+import sqlite3
+
+def select_db(sql):
+    con = sqlite3.connect('diary.db')
+    cur = con.cursor()
+    cur.execute(sql)
+    row = cur.fetchone()
+    con.close()
+    return row
+
+def select_all(sql):
+    con = sqlite3.connect('diary.db')
+    cur = con.cursor()
+    cur.execute(sql)
+    row = cur.fetchall()
+    con.close()
+    return row
 
 def make_text_1(y, m, d):
     return str(y) + '年' + str(m) + '月' + str(d) + '日'
@@ -29,16 +46,13 @@ def click(event):
     elif event.widget['background'] != 'gray':
         messagebox.showinfo('メッセージ', 'データがありません。')
         return
-    with open('diary.csv') as f:
-        reader = csv.reader(f)
-        for row in reader:
-            if row[0] == n:
-                title['text'] = make_text_1(yer[0], mon[0], t) + 'の日記'
-                combo.current(row[1])
-                sclH.set(row[2])
-                var.set(row[3])
-    with open(n + '.txt') as f:
-        data = f.read()
+        
+    row = select_db("SELECT * FROM diary WHERE date='" + n + "'")
+    title['text'] = make_text_1(yer[0], mon[0], t) + 'の日記'
+    combo.current(row[1])
+    sclH.set(row[2])
+    var.set(row[3])
+
     text.delete('1.0', 'end')
     text.insert('1.0', data)
 
@@ -58,13 +72,11 @@ def save(t_day):
 def check(y, m, d):
     if (y, m, d) == (yer[0], mon[0], today):
         return False
-    with open('diary.csv') as f:
-        reader = csv.reader(f)
-        for row in reader:
-            y_m_d = row[0].split('_')
-            if (str(y), str(m), str(d)) == (y_m_d[0], y_m_d[1], y_m_d[2]):
-                return True
-    return False
+    n = make_text_2(y, m, d)
+    if select_db("SELECT * FROM diary WHERE date='" + n + "'") is None:
+        return False
+    return True
+
 WEEK = ['日', '月', '火', '水', '木', '金', '土']
 WEEK_COLOUR = ['red', 'black', 'black', 'black', 'black', 'black', 'blue']
 
@@ -149,9 +161,7 @@ for n in range(3):
 
     t_frame.grid(row=0, column=0, pady=10)
 
-    weather = ('快晴', '晴れ', '曇り', '雨', '雪', '台風', 
-               '晴れのち曇り', '晴れのち雨', '晴れのち雪', '曇りのち晴れ', 
-               '曇りのち雨', '曇りのち雪', '雨のち晴れ', '雨のち曇り', '雨のち雪')
+    weather = select_all("SELECT type FROM weather")
     
     w_frame = tk.Frame(d_frame)
     label_1 = tk.Label(w_frame, text='今日の天気:    ', font=('', 10))
@@ -168,7 +178,7 @@ for n in range(3):
     w_frame.grid(row=1, column = 0)
 
     r_frame = tk.Frame(d_frame)
-    action = ['出社', 'テレワーク', '外回り', '出張', '休日']
+    action = select_all("SELECT type FROM action")
 
     r_frame.grid_columnconfigure(0, weight=1)
     r_frame.grid_columnconfigure(1, weight=1)

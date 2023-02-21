@@ -8,17 +8,17 @@ con = sqlite3.connect('diary.db')
 cur = con.cursor()
 
 try:
-    cur.execute("DROP TABLE dialy")
+    cur.execute("DROP TABLE diary")
 except:
     pass
-cur.execute("""CREATE TABLE dialy(date TEXT PRIMARY KEY,
+cur.execute("""CREATE TABLE diary(date TEXT PRIMARY KEY,
             weather INTEGER,
             adequacy INTEGER,
             action INTEGER,
             event TEXT)""")
-print('dialyテーブルを作成しました。')
+print('diaryテーブルを作成しました。')
 
-sql = """INSERT INTO dialy
+sql = """INSERT INTO diary
 (date, weather, adequacy, action, event)
 VALUES('2022_1_1', 2, 80, 4, 'あけまして、おめでとう。
 目が覚めたら10時だった。
@@ -31,7 +31,7 @@ except EOFError as e:
 print(cur)
 print('1月1日データを登録しました。')
 
-sql = """INSERT INTO dialy
+sql = """INSERT INTO diary
 (date, weather, adequacy, action, event)
 VALUES('2022_1_3', 1, 40, 4, '今日は7時に起きて、久々に街へ出かけた。
 駅前は、結構にぎわっている。
@@ -40,7 +40,7 @@ cur.execute(sql)
 print('1月3日データを登録しました。')
 
 
-sql = """INSERT INTO dialy
+sql = """INSERT INTO diary
 (date, weather, adequacy, action, event)
 VALUES('2022_1_4', 3, 60, 1, 
 'やっぱり寝坊したけど、ズーム会議は13時からなので余裕。
@@ -49,7 +49,7 @@ VALUES('2022_1_4', 3, 60, 1,
 cur.execute(sql)
 print('1月4日データを登録しました。', cur)
 
-for row in cur.execute("SELECT * FROM dialy"):
+for row in cur.execute("SELECT * FROM diary"):
     print(str(row[0]) + "," + str(row[1]) + "," + str(row[2])
           + "," + str(row[3]) + "," + str(row[4]))
           
