@@ -37,7 +37,7 @@ def click(event):
                 combo.current(row[1])
                 sclH.set(row[2])
                 var.set(row[3])
-    with open(n + '.nxt') as f:
+    with open(n + '.txt') as f:
         data = f.read()
     text.delete('1.0', 'end')
     text.insert('1.0', data)
@@ -108,7 +108,8 @@ def disp(arg):
 
 root = tk.Tk()
 root.title('日記アプリ')
-root.geometry('520x280')
+#root.geometry('520x280')
+root.geometry('640x400')
 root.resizable(0, 0)
 
 c_frame = tk.Frame(root)
@@ -136,7 +137,7 @@ for n in range(3):
     
     d_frame = tk.Frame(root)
 
-    t_frame= tk.frame(d_frame)
+    t_frame= tk.Frame(d_frame)
     title = tk.Label(t_frame,
                      text=make_text_1(yer[0], mon[0], today) + 'の日記',
                                       font=('', 12))
