@@ -72,7 +72,7 @@ def click(event):
         return
         
     row = select_db("SELECT * FROM diary WHERE date='" + n + "'")
-    title['text'] = make_text_1(yer[0], mon[0], t_dau) + 'の日記'
+    title['text'] = make_text_1(yer[0], mon[0], t_day) + 'の日記'
     combo.current(row[1])
     sclH.set(row[2])
     var.set(row[3])
@@ -86,7 +86,7 @@ def save(s_date):
         d_1 = combo.current()
         d_2 = sclH.get()
         d_3 = var.get()
-        replace_db([s_date, d_1, d_2, d_3, text.get('10', 'end-1c')])
+        replace_db([s_date, d_1, d_2, d_3, text.get('1.0', 'end-1c')])
         messagebox.showinfo('メッセージ', 'データを保存しました。')
     else:
         messagebox.showinfo('メッセージ', 'データの保存は本日のみです。')
@@ -206,9 +206,11 @@ menu_command = tk.Menu(root)
 men.add_cascade(label='操作', menu=menu_command)
 
 # 「操作」メニューに「保存」「検索」メニューを追加する
-menu_command.add_command(label='保存', command=save)
+menu_command.add_command(label='保存', 
+                         command=lambda:save(make_text_2(yer[0], mon[0], t_day)))
 menu_command.add_separator()
-menu_command.add_command(label='削除', command=delete)
+menu_command.add_command(label='削除', 
+                         command=lambda:delete(make_text_2(yer[0], mon[0], t_day)))
 menu_command.add_separator()
 menu_command.add_command(label='検索', command=search)
 
@@ -253,11 +255,10 @@ title = tk.Label(t_frame,
 title.grid(row=0, column=0, padx = 20)
 t_frame.grid(row=0, column=0, pady=10)
 
-# button = tk.Button(t_frame, text='保存',
-#                     command=lambda:save(make_text_2(yer[0], mon[0], today)))
-# button.grid(row=0, column=1)
-
-# t_frame.grid(row=0, column=0, pady=10)
+button = tk.Button(t_frame, text='保存',
+            command=lambda:save(make_text_2(yer[0], mon[0], today)))
+button.grid(row=0, column=1)
+t_frame.grid(row=0, column=0, pady=10)
 
 # 天気の選択
 weather = select_all("SELECT type FROM weather")
